@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block "content" %}
+    {{ user }}
+    <br>
+    {{ session_message }}
+    <div class="groups">
+    <div class="connection"></div>
+        <br>
+    <div class="messages">
+
+    </div>
+        <br>
+    <div class="form">
+        <div>
+            <input type="text" id="url" class="form-control">
+        </div>
+        <br>
+        <div>
+            <button onclick="on_connect()"  class="btn btn-primary">Connect</button>
+            <button onclick="on_disconnect()"  class="btn btn-danger">Disconnect</button>
+        </div>
+        <br>
+        <div>
+            <textarea class="form-control" name="" id="message" cols="30" rows="10"></textarea>
+        </div>
+        <br>
+        <div>
+            <button onclick="on_send()" id="send" class="btn btn-primary">Send</button>
+        </div>
+
+    </div>
+
+    </div>
+{% endblock "content" %}

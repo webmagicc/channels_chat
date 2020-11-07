@@ -93,6 +93,7 @@ class ChatGroupConsumer(ChatBaseConsumer):
         GroupParticipant.objects.filter(
             group=self.group, user_id__in=user_ids
         ).delete()
+        GroupParticipant.send_update_participant_list_by_group_id(self.group_id)
 
     @database_sync_to_async
     def create_message(self, message):

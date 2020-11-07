@@ -18,7 +18,7 @@ class ChatGroupListConsumer(ChatBaseConsumer):
     async def event_groups_list(self, data):
         group_list = await self.get_groups_list()
         await self._send_message(
-            self.STATUS.OK.value, group_list, 'group.list'
+            self.STATUS.OK.value, group_list, 'groups.list'
         )
 
     async def event_group_create(self, data):

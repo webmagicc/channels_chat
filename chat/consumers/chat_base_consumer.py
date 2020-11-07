@@ -28,7 +28,7 @@ class ChatBaseConsumer(AsyncJsonWebsocketConsumer):
         content = await self.parse_content(content)
         if not content:
             await self._send_message(
-                self.STATUS.ERROR,
+                self.STATUS.ERROR.value,
                 {'detail': 'Wrong message'},
                 self.ERROR_EVENT
             )

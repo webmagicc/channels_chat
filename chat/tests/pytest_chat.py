@@ -40,3 +40,58 @@ async def pytest_chat():
     connected, _ = await communicator.connect()
     assert connected, "Connection fail"
 
+    await communicator.send_json_to(
+        {"event": "group.create", "data": {"name": "Group 1"}}
+    )
+    message = await communicator.receive_json_from()
+    assert message['status'] == 'OK', message
+    assert message['event'] == 'group.create', message
+    assert message['data']['name'] == 'Group 1', message
+    group_url = message['data']['url']
+
+    await communicator.send_json_to(
+        {"event": "groups.list", "data": {}}
+    )
+    message = await communicator.receive_json_from()
+    assert message['event'] == 'groups.list', message
+    assert len(message['data']) == 1, message
+
+    await communicator.disconnect()
+
+    group_communicator = WebsocketCommunicator(
+        application=application,
+        path=group_url,
+        headers=[
+            (
+                b'cookie',
+                f"sessionid={client1.cookies['sessionid'].value}".encode('ascii')
+            )
+        ]
+    )
+    connected, _ = await group_communicator.connect()
+    assert connected, "Connection fail"
+
+    chat_communicator = WebsocketCommunicator(
+        application=application,
+        path='/ws/chat/',
+        headers=[
+            (
+                b'cookie',
+                f"sessionid={client2.cookies['sessionid'].value}".encode('ascii')
+            )
+        ]
+    )
+    connected, _ = await chat_communicator.connect()
+    assert connected, "Connection fail"
+
+    await group_communicator.send_json_to(
+        {"event": "add.participants", "data": {"user_ids": [user2.id]}}
+    )
+    message = await group_communicator.receive_json_from()
+    assert message['event'] == 'participant.list', message
+
+    message = await chat_communicator.receive_json_from()
+    assert message['event'] == 'groups.list', message
+
+
+

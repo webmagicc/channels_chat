@@ -93,5 +93,36 @@ async def pytest_chat():
     message = await chat_communicator.receive_json_from()
     assert message['event'] == 'groups.list', message
 
+    await chat_communicator.disconnect()
+
+    group_communicator2 = WebsocketCommunicator(
+        application=application,
+        path=group_url,
+        headers=[
+            (
+                b'cookie',
+                f"sessionid={client2.cookies['sessionid'].value}".encode('ascii')
+            )
+        ]
+    )
+
+    connected, _ = await group_communicator2.connect()
+    assert connected, "Connection fail"
+
+    await group_communicator.send_json_to(
+        {"event": "post.message", "data": {"message": "hello"}}
+    )
+
+    message = await group_communicator.receive_json_from()
+    assert message['event'] == 'post.list', message
+    assert message['data'][0]["message"] == 'hello', message
+
+    message = await group_communicator2.receive_json_from()
+    assert message['event'] == 'post.list', message
+    assert message['data'][0]["message"] == 'hello', message
+
+    await group_communicator.disconnect()
+    await group_communicator2.disconnect()
+
 
 

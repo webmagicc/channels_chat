@@ -11,7 +11,7 @@ channels-redis==2.4.1
 constantly==15.1.0
 cryptography==2.7
 daphne==2.3.0
-Django==2.2.10
+Django==2.2.18
 django-lifecycle==0.7.0
 djangorestframework==3.11.0
 hiredis==1.0.1
